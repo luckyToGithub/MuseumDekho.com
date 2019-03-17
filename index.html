@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MuseumDekho.com</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+</head>
+<body>
+    <div class="container">
+
+<style>
+    canvas {
+        display: none;
+    }
+    hr {
+        margin-top: 32px;
+    }
+    input[type="file"] {
+        display: block;
+        margin-bottom: 16px;
+    }
+    div {
+        margin-bottom: 16px;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">MuseumsDekho.com</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#h6">Contacts</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown link
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#h5">Feedback</a>
+          
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+
+
+<div>
+
+<div>
+    <video muted playsinline id="qr-video"></video>
+</div>
+<div class="rest">
+<!-- <div class="faltu">
+    <select id="inversion-mode-select">
+        <option value="original">Scan original (dark QR code on bright background)</option>
+        <option value="invert">Scan with inverted colors (bright QR code on dark background)</option>
+        <option value="both">Scan both</option>
+    </select>
+    <br>
+</div> -->
+<b>Detected QR code: </b>
+<span id="cam-qr-result">None</span>
+<br>
+<input type='button' value='🔊 Play' id="play" class="btn btn-danger">
+<br>
+<input type='button' value='🔊 Stop' id="stop" class="btn btn-warning">
+<br>
+
+<a href="https://amanjain702.github.io/AUG/"> <input type='button' value='AR MODE' id="ar" class="btn btn-primary"></a>
+<br>
+<b>Last detected at: </b>
+<span id="cam-qr-result-timestamp"></span>
+</div>
+<script type="module">
+    import QrScanner from "./qr-scanner.min.js";
+    QrScanner.WORKER_PATH = './qr-scanner-worker.min.js';
+
+    const video = document.getElementById('qr-video');
+    const camHasCamera = document.getElementById('cam-has-camera');
+    const camQrResult = document.getElementById('cam-qr-result');
+    const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
+
+    function setResult(label, result) {
+        if(result=='The Adena Pipe is one of the most famous ancient artifacts ever found in Ohio'){
+        var xyz='. It was found in 1901 during the excavation of the mound in Chillicothe for which the Adena culture is named. The pipe is typical of that culture in that it is tubular and made of Ohio pipestone. The bowl opening is between the figures feet. The much smaller mouthpiece opening is on the top of the head.';
+       label.textContent = result+xyz;
+       document.getElementById('play').onclick = function() {responsiveVoice.speak(result+xyz)};
+    } else if(result=='The Koh-i-Noor also spelt Kohinoor and Koh-i-Nur, is one of the largest'){
+          var abc = 'cut diamonds in the world, weighing 105.6 carats (21.12 g), and part of the British Crown Jewels. Probably mined in Golconda, India, there is no record of its original weight, but the earliest well-attested weight is 186 old carats (191 metric carats or 38.2 g). Koh-i-Noor is Hindi-Urdu and Persian for "Mountain of Light", it has been known by this name since the 18th century. It changed hands between various factions in modern-day India, Pakistan, Iran, and Afghanistan, until being ceded to Queen Victoria after the British conquest of the Punjab in 1849.';
+        label.textContent = result+abc;
+        document.getElementById('play').onclick = function() {responsiveVoice.speak(result+abc)};
+    }else{
+        var def=' 2,200-year-old black basalt stone is now a famous artifact is inscribed in hieroglyphic, demotic and Greek and is believed to hold the key to deciphering hieroglyphics and Egypts past. The stone was acquired by the British when they defeated the French in 1801, and transferred it to the British Museum in London in 1802. Although Egypt has continued to push for the stones return the British Museum refuses to budge.';
+         label.textContent = result+def; 
+         document.getElementById('play').onclick = function() {responsiveVoice.speak(result+def)};
+    }
+        document.getElementById('stop').onclick = function() {responsiveVoice.speak('')};
+        camQrResultTimestamp.textContent = new Date().toString();
+        label.style.color = 'teal';
+        clearTimeout(label.highlightTimeout);
+        label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+    }
+
+    // ####### Web Cam Scanning #######
+
+    QrScanner.hasCamera().then(hasCamera => 
+          {if(hasCamera==false){
+           
+           alert('This device does not support camera. QR Scanning and AR mode cannot be accessed');
+          }
+      }
+        );
+
+    const scanner = new QrScanner(video, result => setResult(camQrResult, result));
+    scanner.start();
+
+    document.getElementById('inversion-mode-select').addEventListener('change', event => {
+        scanner.setInversionMode(event.target.value);
+    });
+
+</script>
+<div class="feed">
+<h5 id="h5">
+    <br>
+
+    Feedback
+</h5>
+</div>
+<form name="contact" method="POST" data-netlify="true">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="name4">Name</label>
+      <input type="name" class="form-control" id="name4" placeholder="Name">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="email4">Email</label>
+      <input type="email" class="form-control" id="email4" placeholder="Email">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">Message</label>
+    <input type="text" class="form-control" id="inputAddress" placeholder="Message">
+  </div>
+ 
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<h4 id="h6">
+    <br>
+    <br>
+    Contacts:+919271272812,+918728192819
+</h4>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<br>
+<br><br>
+<iframe id="map" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d56066.73011788705!2d77.23885181487937!3d28.564638455172382!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1smuseum!5e0!3m2!1sen!2sin!4v1552349260042" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+
+</div>
+
+<div class="media">
+    <h6>Follow us on:</h6>
+    <ul>
+        <li><a href="https://www.instagram.com/amanjain702" target="_blank"><i class="fab fa-instagram"></i></a></li>
+
+        <li><a href="https://www.facebook.com/chiranjeeb.sahoo.18" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+    </ul>
+    
+</div>
+
+
+</body>
+</html>
